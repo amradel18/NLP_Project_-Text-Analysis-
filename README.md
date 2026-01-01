@@ -1,12 +1,23 @@
 # NLP Project — Text Analysis
 
-End‑to‑end text analysis project designed to explore and build Natural Language Processing (NLP) workflows. It provides a clear path from raw text to insights and models, covering preprocessing, exploratory analysis, vectorization, topic modeling, classification, and evaluation.
+End‑to‑end text analysis project focused on Fake News detection using the WELFake dataset. The core of the work lives in the notebook that documents and executes the pipeline:
+- Notebook: [NLP.ipynb](file:///E:/F/personal/project_FLINK/TOPIC_modling/NLP_Project_-Text-Analysis-/NLP.ipynb)
+- Dataset: [data/WELFake_Dataset.csv](file:///E:/F/personal/project_FLINK/TOPIC_modling/NLP_Project_-Text-Analysis-/data/WELFake_Dataset.csv)
+
+The workflow moves from raw text to modeling and evaluation, with clear, reproducible steps for preprocessing, feature extraction, training, and metrics.
 
 ## Highlights
 - Modular workflow for common NLP tasks
 - Clean separation between data, experiments, and outputs
 - Ready for classical ML and deep learning approaches
 - Works with CSV/JSON datasets and can be extended to larger corpora
+
+## Project Overview
+- Task: Binary classification of news articles into Real vs Fake
+- Dataset: WELFake (combined, cleaned news articles)
+- Labels: `label = 0` Real, `label = 1` Fake
+- Columns: `id` (index), `title`, `text`, `label`
+- Notebook runs end‑to‑end: load data → clean → split → vectorize → train → evaluate
 
 ## Getting Started
 
@@ -34,29 +45,18 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 pip install transformers sentencepiece
 ```
 
-## Suggested Project Structure
-This repository is starting with documentation first. As you add code, the following structure keeps things organized:
+To run the notebook locally:
+```bash
+pip install notebook
+jupyter notebook NLP.ipynb
 ```
-NLP_Project_-Text-Analysis-/
-├─ data/
-│  ├─ raw/              # Unmodified datasets
-│  ├─ interim/          # Cleaned or sampled data
-│  └─ processed/        # Final features for modeling
-├─ notebooks/           # Exploratory analysis and experiments
-├─ scripts/             # CLI scripts (train, evaluate, infer)
-├─ src/                 # Reusable library code
-│  ├─ preprocessing/    # Cleaning, tokenization, normalization
-│  ├─ features/         # Vectorizers, embeddings
-│  ├─ models/           # ML/DL models
-│  └─ utils/            # IO, logging, configs
-├─ outputs/             # Reports, figures, artifacts
-├─ tests/               # Unit/integration tests
-└─ README.md
-```
+Or use Google Colab with GPU acceleration; the notebook supports batch training workflows.
+
+
 
 ## Typical Workflows
 
-### 1) Preprocessing and EDA
+### 1) Preprocessing and EDA (as used in the notebook)
 Key steps:
 - Normalize text (lowercasing, punctuation, numbers)
 - Tokenize, remove stopwords, apply stemming or lemmatization
@@ -86,7 +86,7 @@ vectorizer = TfidfVectorizer(max_features=5000, ngram_range=(1,2))
 X = vectorizer.fit_transform(corpus)  # corpus: list of cleaned strings
 ```
 
-Embeddings (Transformer):
+Embeddings (Transformer) — optional for stronger baselines:
 ```python
 from transformers import AutoTokenizer, AutoModel
 import torch
@@ -117,7 +117,7 @@ topics = lda.print_topics(num_words=8)
 ```
 
 ### 4) Classification
-Baseline with Logistic Regression:
+Baseline with Logistic Regression or similar classical models:
 ```python
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
@@ -131,7 +131,7 @@ print(classification_report(y_test, pred))
 ```
 
 ## Data Expectations
-- For classification: a CSV with columns `text` and `label`
+- For classification: a CSV with columns `title`, `text`, `label` (WELFake format). `label=0` Real, `label=1` Fake.
 - For topic modeling: a text‑only dataset or `text` column
 - Keep raw files immutable; store derived data under `interim`/`processed`
 
@@ -156,6 +156,12 @@ data:
 - Topic modeling: coherence, diversity, qualitative topic inspection
 - Log metrics to CSV and save figures under `outputs/`
 
+## Notebook Guide
+- Open [NLP.ipynb](https://colab.research.google.com/drive/1X3V4tdpCE57TMZO3YErAZyvJN8g48PFM?usp=drive_link)
+- Run cells sequentially; adjust hyperparameters (vectorizer size, model type) in the configuration cells
+- Inspect intermediate outputs: sample cleaned text, feature shapes, confusion matrix and classification report
+- For transformer embeddings, enable GPU and batch inference for speed
+
 ## Roadmap
 - Add reusable `src/` modules for preprocessing, features, and models
 - Provide command‑line scripts for training and inference
@@ -167,4 +173,3 @@ Pull requests are welcome. Please open an issue to discuss any major changes fir
 
 ## License
 Specify your preferred license (e.g., MIT, Apache‑2.0) once code is added.
-
